@@ -1,17 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 int estpremier (int x){
  int i,p=0;
+ bool b = 1;
  for (i=1;i<=x;i++){
     if(x%i==0){
         p++;
+        
     }
  }
-if (p==2){
-printf("ce nombre est premier");
+if (b=p==2){
+    printf("%d",b);
+
 }else{
-   printf("ce nombre est pas premier"); 
+      printf("%d",b);
+  
 }
+return b;
 }
 
 
