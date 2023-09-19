@@ -1,0 +1,199 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct date {
+    int j;
+    int m;
+    int annee;
+} date;
+
+typedef struct projet {
+    char nom[50];  // Utilisation de tableaux de caractères pour stocker les noms et prénoms
+    char prenom[50];
+    date dn;
+} apprenant;
+
+int main() {
+    int choix;
+    apprenant ap[50];
+    int size = 0;
+
+    printf("\t \t***************Gestion d'apprenant*******************\n \n");
+    menu :
+    printf("\n");
+    printf("1-Ajouter un apprenant \n");
+    printf("2-Trier les apprenants par leur age \n");
+    printf("3-Affichage  \n");
+    printf("4-chercher un apprenant  \n");
+    printf("5-modifier un apprenant  \n");
+    printf("6-supprimer un apprenant  \n");
+    printf("Veuillez saisir votre choix : ");
+    scanf("%d", &choix);
+
+    switch (choix) {
+        case 1: {
+            int nbrA;
+            int i;
+            printf("Entrer le nombre d'apprenants que vous souhaitez introduire : ");
+            scanf("%d", &nbrA);
+            for (i = 0; i < nbrA; i++) {
+                printf("Entrer votre nom :  ");
+                scanf("%s", ap[size].nom);
+                printf("Entrer votre prenom : ");
+                scanf("%s", ap[size].prenom);
+                printf("Entrer la date de naissance (jj mm aaaa) : ");
+                scanf("%d%d%d", &ap[size].dn.j, &ap[size].dn.m, &ap[size].dn.annee);
+                system("cls");
+                printf("Nom : %s \n Prenom : %s \n Date de naissance : %d / %d / %d\n",
+                       ap[size].nom, ap[size].prenom, ap[size].dn.j, ap[size].dn.m, ap[size].dn.annee);
+                size++;
+                
+            }
+            goto menu ;
+            break;
+
+        }
+        case 2:{
+            int i,j;
+			for( i = 0; i < size-1; i++) {
+			    int idx = i;
+			    for( j = i+1; j < size; j++){
+			      if(ap[j].dn.annee < ap[idx].dn.annee) idx = j;
+			    }
+			    
+		      apprenant tmp = ap[i];
+		      ap[i] = ap[idx];
+		      ap[idx] = tmp;
+			    
+			}
+		
+			for ( i=0 ; i<size ; i++) {
+				printf("nom %s  prenom %s  date de naissance %d / %d / %d \n", ap[i].nom, ap[i].prenom, ap[i].dn.j, ap[i].dn.m,ap[i].dn.annee);
+			}
+            goto menu;
+
+			system("cls");
+           
+        }
+         break;
+    
+        case 3:{
+            int affich;
+            printf("1->Afficher l'apprenant le plus age.  \n");
+            printf("2->Afficher l'apprenant le plus jeune. \n");
+            printf("3->Afficher l'age moyen de la classe. \n");
+            printf("saisir votre choix : ");
+            scanf("%d",&affich);
+            if (affich==1)
+            {
+               int i,j;
+			for( i = 0; i < size-1; i++) {
+			    int idx = i;
+			    for( j = i+1; j < size; j++){
+			      if(ap[j].dn.annee < ap[idx].dn.annee) idx = j;
+			    }
+			    
+		      apprenant tmp = ap[i];
+		      ap[i] = ap[idx];
+		      ap[idx] = tmp;
+			    
+			}
+                printf("l'appenant le plus age est : %s %s" ,ap[0].nom,ap[0].prenom);
+            }else if (affich == 2){
+                 int i,j;
+			for( i = 0; i < size-1; i++) {
+			    int idx = i;
+			    for( j = i+1; j < size; j++){
+			      if(ap[j].dn.annee < ap[idx].dn.annee) idx = j;
+			    }
+			    
+		      apprenant tmp = ap[i];
+		      ap[i] = ap[idx];
+		      ap[idx] = tmp;
+			    
+			}
+                printf("l'appenant le plus age est : %s %s" ,ap[size-1].nom,ap[size-1].prenom);
+
+
+
+            }else if (affich==3)
+            {
+                int i, s = 0, age, m;
+                for (i = 0; i < size; i++) {
+                  age = 2023 - ap[i].dn.annee;
+                     s = s + age;
+                    }
+                m = s / size;
+                printf("L'age moyen de la classe est : %d\n", m);
+            }
+            
+            goto menu;
+
+            
+        }
+    case 4 :{
+        int idx =-1;
+				char nom[10];
+				printf("entrer le nom pour chercher ");
+				scanf("%s",&nom);
+				int i;
+				for( i = 0 ; i<size ; i++) 
+			{
+				
+				if (strcmp(ap[i].nom, nom) == 0) {
+					idx=i;
+				}
+			
+			}
+				if (idx == -1) printf("nom introuvable\n");
+			else
+				printf("le nom rechercher est :  nom et %s  prenom %s  date de naissance %d / %d / %d\n",ap[idx].nom, ap[idx].prenom, ap[idx].dn.j, ap[idx].dn.m,ap[idx].dn.annee);
+ 			goto menu;
+    }
+           case 5 :{
+           char nom[50];
+        int i;
+
+        printf("Entrer le nom de l'apprenant que vous voulez modifier : ");
+        scanf("%s", nom);
+
+        for (i = 0; i < size; i++) {
+            if (strcmp(ap[i].nom, nom) == 0) {
+                printf("Apprenant trouve :\n");
+                printf("Nom : %s\n", ap[i].nom);
+                printf("Prénom : %s\n", ap[i].prenom);
+                printf("Date de naissance : %d / %d / %d\n", ap[i].dn.j, ap[i].dn.m, ap[i].dn.annee);
+                printf("Nouveau nom : ");
+                scanf("%s", ap[i].nom);
+                printf("Nouveau prenom : ");
+                scanf("%s", ap[i].prenom);
+                printf("Nouvelle date de naissance (jj mm aaaa) : ");
+                scanf("%d%d%d", &ap[i].dn.j, &ap[i].dn.m, &ap[i].dn.annee);
+
+                printf("Apprenant bien enregistrer\n");
+                break; 
+            }
+        }
+
+        if (i == size) {
+            printf("Apprenant non trouve.\n");
+        }
+
+        break;
+
+           }
+    }    
+
+
+
+
+
+
+
+
+
+
+    return 0;
+}
+
