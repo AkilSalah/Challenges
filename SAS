@@ -1,0 +1,193 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#include<string.h>
+typedef struct date
+{   int jour;
+    int mois;
+    int annee;
+}deadline;
+
+typedef struct sas
+{
+int  identifiant;    
+char titre[20];
+char description[50];
+deadline deadline;
+char statut[50];
+}tache;
+int main() {
+		printf("\t *****************Projet SAS Gestion de Taches ToDo*****************\n");
+
+	int choix;
+	tache taches[50];
+	int size = 0 ;
+    menu:
+	printf(" 1--> Introduire une tache \n");
+	printf(" 2--> Introduire des plusieurs taches \n");
+	printf(" 3--> Affichage \n");
+	printf(" 4--> Modifier une tache\n");
+	printf(" 5--> Supprimer une tache \n");
+    printf(" 6--> Chercher une tache \n");
+    printf(" 7--> Statistique des tache \n");
+    printf("veuillez saisir votre choix : ");
+	scanf("%d",&choix);
+    switch (choix)
+    {
+    case 1:{
+        
+			printf("enterer le titre du taches  : ");
+			scanf("%s", &taches[size].titre);
+			printf("entrer la description du taches : ");
+			scanf("%s", &taches[size].description);
+			printf("enterer le deadline de taches : ");
+			scanf("%d", &taches[size].deadline.jour);
+            scanf("%d", &taches[size].deadline.mois);
+            scanf("%d", &taches[size].deadline.annee);
+            printf("entrer le statut du taches : ");
+			scanf("%s", &taches[size].statut);
+            printf("\n \n");
+			printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n",
+                           size, taches[size].titre, taches[size].description,
+                           taches[size].deadline.jour, taches[size].deadline.mois, taches[size].deadline.annee,
+                           taches[size].statut);
+			size++;
+			goto menu ;
+        break;
+    }
+     case 2:{
+        int nbrT,i;
+        printf("Combien des tachess tu veux le saisie : ");
+        scanf("%d",&nbrT);
+        for ( i = 0; i < nbrT; i++)
+        {
+        
+			printf("enterer le titre du taches  : ");
+			scanf("%s", &taches[size].titre);
+			printf("entrer la description du taches : ");
+			scanf("%s", &taches[size].description);
+			printf("enterer le deadline de taches : ");
+			scanf("%d", &taches[size].deadline.jour);
+            scanf("%d", &taches[size].deadline.mois);
+            scanf("%d", &taches[size].deadline.annee);
+            printf("entrer le statut du taches : ");
+			scanf("%s", &taches[size].statut);
+			printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n \n",
+                           size, taches[size].titre, taches[size].description,
+                           taches[size].deadline.jour, taches[size].deadline.mois, taches[size].deadline.annee,
+                           taches[size].statut);
+			size++;
+        }
+			goto menu ;
+        break;
+    }
+    case 3 :{
+        int affiche;
+        printf("\n");
+        printf("1-->Trier les taches par ordre alphabetique. \n");
+        printf("2-->Trier les taches par deadline. \n");
+        printf("3-->Afficher les taches dont le deadline est dans 3 jours ou moins \n");
+        printf("\n");
+        printf("saisir votre choix : ");
+        scanf("%d",&affiche);
+        if (affiche == 1) {
+        int i, j;
+        tache tmp;
+         for (i = 0; i < size - 1; i++) {
+         for (j = i + 1; j < size; j++) {
+            if (strcmp(taches[i].titre, taches[j].titre) > 0) {
+                tmp = taches[i];
+                taches[i] = taches[j];
+                taches[j] = tmp; 
+            }
+        }
+    }
+        for ( i=0 ; i<size ; i++) {
+            printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n \n",
+                           taches[i].identifiant, taches[i].titre, taches[i].description,
+                           taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
+                           taches[i].statut);
+        }
+        goto menu;
+}
+      if (affiche == 2) {
+    tache tmp;
+    for (int i = 0; i < size; i++) {
+        for (int j = i + 1; j < size; j++) {
+            if (taches[i].deadline.annee > taches[j].deadline.annee) {
+                tmp = taches[i];
+                taches[i] = taches[j];
+                taches[j] = tmp;
+            } else if (taches[i].deadline.annee == taches[j].deadline.annee) {
+                if (taches[i].deadline.mois > taches[j].deadline.mois) {
+                    tmp = taches[i];
+                    taches[i] = taches[j];
+                    taches[j] = tmp;
+                } else if (taches[i].deadline.mois == taches[j].deadline.mois) {
+                    if (taches[i].deadline.jour > taches[j].deadline.jour) {
+                        tmp = taches[i];
+                        taches[i] = taches[j];
+                        taches[j] = tmp;
+                    }
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < size; i++) {
+        printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n\n",
+            taches[i].identifiant, taches[i].titre, taches[i].description,
+            taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
+            taches[i].statut);
+    }
+    goto menu;  }
+// if (affiche==3)
+// {
+    
+// }
+
+  }
+ case 4: {
+            int affiche;
+            printf("\n");
+            printf("1--> Modifier la description d'une tache\n");
+            printf("2--> Modifier le statut d'une tâche\n");
+            printf("3--> Modifier le deadline d'une tâche\n");
+            printf("Veuillez saisir votre choix : ");
+            scanf("%d", &affiche);
+            printf("\n");
+            if (affiche == 1) {
+                int id;
+                printf("Entrer l'identifiant du tache pour modifier sa description : ");
+                scanf("%d", &id);
+                for (int i = 0; i < size; i++) {
+                    if (taches[i].identifiant == id) {
+                        printf("La tache est trouvee.\n");
+                        printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n\n",
+                            taches[i].identifiant, taches[i].titre, taches[i].description,
+                            taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
+                            taches[i].statut);
+                        printf("Nouvelle description : ");
+                        scanf("%s", &taches[i].description);
+                        printf("La modification a bien ete enregistre !!!\n");
+                        break;
+                    }
+                    if (i == size-1 ) {
+                        printf("Tache introuvable.\n");
+                    }
+                }
+            }
+           
+            break;
+        }
+        
+        default:
+            printf("Choix invalide. Veuillez saisir un choix valide.\n");
+            break;
+    }
+
+   
+    goto menu;
+    
+return 0;
+}
