@@ -141,10 +141,9 @@ int main() {
             taches[i].statut);
     }
     goto menu;  }
-// if (affiche==3)
-// {
+ if (affiche==3)
+{
     
-// }
 
   }
  case 4: {
@@ -154,8 +153,8 @@ int main() {
             printf("2--> Modifier le statut d'une tâche\n");
             printf("3--> Modifier le deadline d'une tâche\n");
             printf("Veuillez saisir votre choix : ");
-            scanf("%d", &affiche);
             printf("\n");
+            scanf("%d", &affiche);
             if (affiche == 1) {
                 int id;
                 printf("Entrer l'identifiant du tache pour modifier sa description : ");
@@ -179,6 +178,27 @@ int main() {
             }
            
             break;
+             if (affiche == 2) {
+                int id;
+                printf("Entrer l'identifiant du tache pour modifier sa description : ");
+                scanf("%d", &id);
+                for (int i = 0; i < size; i++) {
+                    if (taches[i].identifiant == id) {
+                        printf("La tache est trouvee.\n");
+                        printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n\n",
+                            taches[i].identifiant, taches[i].titre, taches[i].description,
+                            taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
+                            taches[i].statut);
+                        printf("Nouveau statut : ");
+                        scanf("%s", &taches[i].statut);
+                        printf("La modification a bien ete enregistre !!!\n");
+                        break;
+                    }
+                    if (i == size-1 ) {
+                        printf("Tache introuvable.\n");
+                    }
+                }
+            }
         }
         
         default:
