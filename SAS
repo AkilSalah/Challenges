@@ -39,15 +39,15 @@ int main() {
     case 1:{
 
 			printf("enterer le titre du taches  : ");
-			scanf("%s", &taches[size].titre);
+			scanf(" %99[^\n]", &taches[size].titre);
 			printf("entrer la description du taches : ");
-			scanf("%s", &taches[size].description);
+			scanf(" %99[^\n]", &taches[size].description);
 			printf("enterer le deadline de taches : ");
 			scanf("%d", &taches[size].deadline.jour);
             scanf("%d", &taches[size].deadline.mois);
             scanf("%d", &taches[size].deadline.annee);
             printf("entrer le statut du taches : ");
-			scanf("%s", &taches[size].statut);
+			scanf(" %99[^\n]", &taches[size].statut);
             printf("\n \n");
             taches[size].identifiant = Identifiant;
 			printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n",
@@ -67,15 +67,15 @@ int main() {
         {
 
 			printf("enterer le titre du taches  : ");
-			scanf("%s", &taches[size].titre);
+			scanf(" %99[^\n]", &taches[size].titre);
 			printf("entrer la description du taches : ");
-			scanf("%s", &taches[size].description);
+			scanf(" %99[^\n]", &taches[size].description);
 			printf("enterer le deadline de taches : ");
 			scanf("%d", &taches[size].deadline.jour);
             scanf("%d", &taches[size].deadline.mois);
             scanf("%d", &taches[size].deadline.annee);
             printf("entrer le statut du taches : ");
-			scanf("%s", &taches[size].statut);
+			scanf(" %99[^\n]", &taches[size].statut);
 			taches[size].identifiant = Identifiant;
 			printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n \n",
                            Identifiant, taches[size].titre, taches[size].description,
@@ -148,12 +148,44 @@ int main() {
             taches[i].statut);
     }
     goto menu;  }
-/* if (affiche==3)
-{
+    if (affiche == 3) {
+    time_t currentTime;
+    struct tm currentDate;
+    time(&currentTime);
+    currentDate = *localtime(&currentTime);
 
+    int i, found = 0;
+    for (i = 0; i < size; i++) {
+        struct tm taskDeadline = {
+            .tm_year = taches[i].deadline.annee - 1900,
+            .tm_mon = taches[i].deadline.mois - 1,
+            .tm_mday = taches[i].deadline.jour
+        };
 
-  }*/
+        // Calculer la différence en secondes entre la date limite et la date actuelle
+        double diffSeconds = difftime(mktime(&taskDeadline), mktime(&currentDate));
+
+        // Calculer le nombre de jours restants
+        int daysRemaining = (int)(diffSeconds / (60 * 60 * 24));
+
+        if (daysRemaining <= 3) {
+            found = 1;
+            printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\nJours restants : %d\n\n",
+                taches[i].identifiant, taches[i].titre, taches[i].description,
+                taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
+                taches[i].statut, daysRemaining);
+        }
     }
+
+    if (!found) {
+        printf("Aucune tâche avec un délai de 3 jours ou moins n'a été trouvée.\n");
+    }
+
+    goto menu;
+}
+
+    }
+
 case 4: {
     int affiche;
     printf("\n");
@@ -309,28 +341,33 @@ case 4: {
     printf("saisir votre choix : ");
     scanf("%d",&affiche);
     if(affiche==1){
-        int st=0;
-            for (int i=1;i<=size;i++){
-                st=st+i;
-            }
-        printf("le nombre total des taches est  :%d \n",st);
+        printf("le nombre total des taches est  :%d \n",size);
         goto menu;
-
+    }
+    if(affiche ==2){
+        int tcomlet=0;
+        int tincomplet=0;
+        for(int i =0;i<size;i++){
+           if(strcmp(taches[i].statut, "a realiser") == 0 || strcmp(taches[i].statut, "en cours de realisation") == 0){
+        tincomplet++;
+        }
+        else if (strcmp(taches[i].statut, "finalise") == 0) {
+        tcomlet++;
+        }
+        }
+         printf("les taches complet : %d taches \n",tcomlet);
+            printf("les taches incomplet : %d taches \n",tincomplet);
+            break;
+    }goto menu;
+    if(affiche==3){
 
     }
 
+    goto menu;
+    break;
     }
-
-
-
-
-
-
-
-
-    }
-
-
+}
 
 return 0;
 }
+
