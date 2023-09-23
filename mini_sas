@@ -24,14 +24,14 @@ static int Identifiant = 1;
 
 // Function prototypes...
 void displayMenu();
-int addTask(tache taches[], int size);
-void addMultipleTasks(tache taches[], int size);
+void addTask(tache taches[], int *size);
+void addMultipleTasks(tache taches[], int *size);
 void displayTasks(tache taches[], int size);
 void sortTasksAlphabetically(tache taches[], int size);
 void sortTasksByDeadline(tache taches[], int size);
 void displayTasksWithinThreeDays(tache taches[], int size);
 void modifyTask(tache taches[], int size);
-int deleteTask(tache taches[], int size);
+void deleteTask(tache taches[], int *size);
 void searchTask(tache taches[], int size);
 void displayStatistics(tache taches[], int size);
 
@@ -39,12 +39,11 @@ int main()
 {
     printf("\n\t\t*********************** Projet SAS Gestion de Taches ToDo **************************\n\n");
 
-    tache taches[50];
+    tache taches[100];
     int size = 0;
     int choix;
 
-    while (1)
-    {
+    while(1){
         displayMenu();
         scanf("%d", &choix);
         printf("\n");
@@ -52,21 +51,44 @@ int main()
         switch (choix)
         {
         case 1:
-            size = addTask(taches, size);
-        
+            addTask(taches, &size);
+            displayTasks(taches, size);
             break;
         case 2:
-            addMultipleTasks(taches, size);
-        
-            break;
-        case 3:
+            addMultipleTasks(taches, &size);
             displayTasks(taches, size);
+            break;
+        case 3:{
+            int affiche;
+            printf("\t\t >>>> MENU D'AFFICHAGE :\n");
+            printf("\t\t 1 --> Trier les taches par ordre alphabetique.\n");
+            printf("\t\t 2 --> Trier les taches par deadline.\n");
+            printf("\t\t 3 --> Afficher les taches dont le deadline est dans 3 jours ou moins.\n\n");
+            printf("Saisir votre choix : ");
+            scanf("%d", &affiche);
+            printf("\n");
+
+        switch (affiche)
+    {
+            case 1:
+                sortTasksAlphabetically(taches, size);
+                break;
+            case 2:
+                sortTasksByDeadline(taches, size);
+                break;
+            case 3:
+                displayTasksWithinThreeDays(taches, size);
+                break;
+            default:
+                printf("Option invalide.\n");
+            }
+        }
             break;
         case 4:
             modifyTask(taches, size);
             break;
         case 5:
-            size = deleteTask(taches, size);
+            deleteTask(taches, &size);
             break;
         case 6:
             searchTask(taches, size);
@@ -80,9 +102,10 @@ int main()
         default:
             printf("Votre choix est invalide !!\n");
         }
-    }
 
+    }
     return 0;
+
 }
 
 void displayMenu()
@@ -99,33 +122,30 @@ void displayMenu()
     printf("\t\t>>>> Veuillez saisir votre choix : ");
 }
 
-int addTask(tache taches[], int size)
+void addTask(tache taches[], int *size)
 {
     printf("Entrer le titre du taches       : ");
-    scanf(" %19s", taches[size].titre);
+    scanf(" %[^\n]", taches[*size].titre);
     printf("Entrer la description du taches : ");
-    scanf(" %49s", taches[size].description);
+    scanf(" %[^\n]", taches[*size].description);
     printf("Entrer le deadline de taches    : ");
-    scanf("%d", &taches[size].deadline.jour);
-    scanf("%d", &taches[size].deadline.mois);
-    scanf("%d", &taches[size].deadline.annee);
+    scanf("%d %d %d", &taches[*size].deadline.jour, &taches[*size].deadline.mois, &taches[*size].deadline.annee);
     printf("Entrer le statut du taches      : ");
-    scanf(" %49s", taches[size].statut);
+    scanf(" %[^\n]", taches[*size].statut);
     printf("\n");
-    taches[size].identifiant = Identifiant;
+    taches[*size].identifiant = Identifiant;
     Identifiant++;
-    size++;
-    return size;
+    (*size)++;
 }
 
-void addMultipleTasks(tache taches[], int size)
+void addMultipleTasks(tache taches[], int *size)
 {
     int nbrT, i;
     printf("Combien de taches tu veux saisir : ");
     scanf("%d", &nbrT);
     for (i = 0; i < nbrT; i++)
     {
-        size = addTask(taches, size);
+        addTask(taches, size);
     }
 }
 
@@ -179,48 +199,50 @@ void sortTasksByDeadline(tache taches[], int size)
                     }
                 }
             }
-        }
+        } displayTasks(taches,size);
     }
+
 }
 
 void displayTasksWithinThreeDays(tache taches[], int size)
 {
-     printf("Tâches avec un délai de 3 jours ou moins :\n");
+    printf("Taches avec un delai de 3 jours ou moins :\n");
+    time_t seconds = time(NULL);
+    struct tm *current_time = localtime(&seconds);
+    int currentYear = (current_time->tm_year + 1900);
+    int currentMonth = (current_time->tm_mon + 1);
+    int currentDay = current_time->tm_mday;
+
     for (int i = 0; i < size; i++) {
-        // Calculer le nombre de jours restants jusqu'au délai de la tâche
+
         int jours = taches[i].deadline.annee * 365 + taches[i].deadline.mois * 30 + taches[i].deadline.jour;
-        time_t seconds = time(NULL);
-        struct tm *current_time = localtime(&seconds);
-        int currentYear = (current_time->tm_year + 1900);
-        int currentMonth = (current_time->tm_mon + 1);
-        int currentDay = current_time->tm_mday;
         int delai_jour = jours - (currentYear * 365 + currentMonth * 30 + currentDay);
 
-        // Vérifier si le délai est de 3 jours ou moins
+
         if (delai_jour <= 3 && delai_jour >= 0) {
-                printf("\n");
             printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n\n",
-                taches[i].identifiant, taches[i].titre, taches[i].description,
-                taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
-                taches[i].statut);
-                printf("\n");
+                   taches[i].identifiant, taches[i].titre, taches[i].description,
+                   taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
+                   taches[i].statut);
         }
     }
 }
 
-    void modifyTask(tache taches[], int size) {
+   void modifyTask(tache taches[], int size) {
     int id, found = 0;
     printf("Entrer l'identifiant de la tâche à modifier : ");
     scanf("%d", &id);
-    
+
     for (int i = 0; i < size; i++) {
         if (taches[i].identifiant == id) {
             found = 1;
             int choix;
-            printf("Que voulez-vous modifier ?\n");
-            printf("1. Description\n");
-            printf("2. Statut\n");
-            printf("3. Deadline\n");
+            printf("\n");
+            printf("\t\t >>>> Que voulez-vous modifier ?\n");
+            printf("\t\t 1--> Description\n");
+            printf("\t\t 2-->  Statut\n");
+            printf("\t\t 3-->  Deadline\n");
+            printf("Veuillez saisie votre choix :");
             scanf("%d", &choix);
 
             switch (choix) {
@@ -248,114 +270,147 @@ void displayTasksWithinThreeDays(tache taches[], int size)
     if (!found) {
         printf("Tâche non trouvée.\n");
     }
-
-int deleteTask(tache taches[], int size)
-{
-     int id;
-        int tr=0;
-    printf("entrer id de la tache que tu veux le supprimer : ");
-    scanf("%d",&id);
-    for(int i =0;i<size;i++){
-        if(taches[i].identifiant==id){
-            printf("la tache est trouver !!\n");
-            tr=1;
-            for (int j=i;j<size-1;j++){
-                taches[j+1]=taches[j];
-
-            }size--;
-                printf("Tache supprimee avec succes\n");
-                    break;
-        }
-
-    }
-              if (tr == 0) {
-                printf("Tache introuvable.\n");
-            }
-    return size;
 }
 
-void searchTaskid(tache taches[], int size)
+void deleteTask(tache taches[], int *size)
 {
     int id;
-        printf("entrer id de la tache que tu cherche : ");
-        scanf("%d",&id);
-        for(int i =0;i<size;i++){
-            if(taches[i].identifiant==id){
-                printf("la tache que tu cherche est exist !!\n");
-                printf("\n");
-                printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n\n",
-                    taches[i].identifiant, taches[i].titre, taches[i].description,
-                    taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
-                    taches[i].statut);
-                printf("\n");
+    int tr = 0;
+    printf("Entrer l'identifiant de la tache que vous voulez supprimer : ");
+    scanf("%d", &id);
 
+    for (int i = 0; i < *size; i++) {
+        if (taches[i].identifiant == id) {
+            printf("La tache a été trouvée !!\n");
+            tr = 1;
+
+            // Déplacer les tâches suivantes d'un cran vers le haut pour remplir l'emplacement supprimé
+            for (int j = i; j < *size - 1; j++) {
+                taches[j] = taches[j + 1];
             }
-            if(i==size){
-            printf("la tache n'exist pas ");
+
+            (*size)--;
+            printf("Tache supprimée avec succès.\n");
+            break; // Vous pouvez sortir de la boucle dès que la tâche est trouvée et supprimée
         }
+    }
+
+    if (tr == 0) {
+        printf("Tache introuvable.\n");
+    }
 }
-}
-void searchTasktitle(tache taches[], int size){
+
+void searchTask(tache taches[], int size) {
+    int choix;
+    printf("\t\t >>>>MENU DE RECHERCHE :\n");
+    printf("\t\t 1-->Recherche par ID\n");
+    printf("\t\t 2-->Recherche par titre\n");
+    printf("Taper votre choix : ");
+    scanf("%d", &choix);
+
+    switch (choix) {
+        case 1: {
+            int id;
+            printf("Entrez l'ID de la tâche que vous recherchez : ");
+            scanf("%d", &id);
+            int found = 0;
+
+            for (int i = 0; i < size; i++) {
+                if (taches[i].identifiant == id) {
+                    found = 1;
+                    printf("La tâche que vous cherchez existe :\n");
+                    printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n\n",
+                           taches[i].identifiant, taches[i].titre, taches[i].description,
+                           taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
+                           taches[i].statut);
+                    break;
+                }
+            }
+
+            if (!found) {
+                printf("La tâche que vous cherchez n'existe pas.\n");
+            }
+            break;
+        }
+
+        case 2: {
             char titre[20];
-        printf("entrer le titre de la tache que tu cherche : ");
-        scanf("%s",&titre);
-        for(int i =0;i<size;i++){
-            if(strcmp(taches[i].titre,titre)==0){
+            printf("Entrez le titre de la tâche que vous recherchez : ");
+            scanf(" %19s", titre);
+            int found = 0;
 
-                printf("la tache que tu cherche est exist !!\n");
-                printf("\n");
-                printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n\n",
+            for (int i = 0; i < size; i++) {
+                if (strcmp(taches[i].titre, titre) == 0) {
+                    found = 1;
+                    printf("La tâche que vous cherchez existe :\n");
+                    printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\n\n",
+                           taches[i].identifiant, taches[i].titre, taches[i].description,
+                           taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
+                           taches[i].statut);
+                }
+            }
+
+            if (!found) {
+                printf("La tâche que vous cherchez n'existe pas.\n");
+            }
+            break;
+        }
+
+        default:
+            printf("Option invalide.\n");
+    }
+}
+
+void displayStatistics(tache taches[], int size) {
+    printf("\n");
+    printf("\t\t >>>>MENU DE STATISTIQUES :\n");
+    printf("\t\t 1-->Statistiques completes (taches completees et incompletes)\n");
+    printf("\t\t 2-->Statistiques basees sur les delais\n");
+    int choix_stat;
+    printf("Taper votre choix : ");
+    scanf("%d", &choix_stat);
+
+    switch (choix_stat) {
+        case 1: {
+            int completedTasks = 0;
+            int incompleteTasks = 0;
+
+            for (int i = 0; i < size; i++) {
+                if (strcmp(taches[i].statut, "finalise") == 0) {
+                    completedTasks++;
+                } else {
+                    incompleteTasks++;
+                }
+            }
+
+            printf("Nombre total de tâches : %d\n", size);
+            printf("Nombre de tâches complétées : %d\n", completedTasks);
+            printf("Nombre de tâches incomplétées : %d\n", incompleteTasks);
+            break;
+        }
+        case 2: {
+            printf("Tâches avec le délai des jours restants :\n");
+            time_t seconds = time(NULL);
+            struct tm *current_time = localtime(&seconds);
+            int currentYear = (current_time->tm_year + 1900);
+            int currentMonth = (current_time->tm_mon + 1);
+            int currentDay = current_time->tm_mday;
+
+            for (int i = 0; i < size; i++) {
+                // Calculer le nombre de jours restants jusqu'à la deadline de la tâche
+                int jours = taches[i].deadline.annee * 365 + taches[i].deadline.mois * 30 + taches[i].deadline.jour;
+                int delai_jour = jours - (currentYear * 365 + currentMonth * 30 + currentDay);
+
+                printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\nNombre de jours restants : %d\n\n",
                     taches[i].identifiant, taches[i].titre, taches[i].description,
                     taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
-                    taches[i].statut);
-                    printf("\n");
-
+                    taches[i].statut, delai_jour);
             }
-            if(i==size){
-            printf("la tache n'exist pas ");
+            break;
         }
-        }
-}
-void displayStatisticsnt(tache taches[], int size)
-{
-        printf("\n");
-        printf("le nombre total des taches est  :%d \n",size);
-}
-void displayStatistics(tache taches[], int size) {
-    int completedTasks = 0;
-    int incompleteTasks = 0;
-
-    for (int i = 0; i < size; i++) {
-        if (strcmp(taches[i].statut, "finalise") == 0) {
-            completedTasks++;
-        } else {
-            incompleteTasks++;
-        }
-    }
-
-    printf("Nombre total de tâches : %d\n", size);
-    printf("Nombre de tâches complétées : %d\n", completedTasks);
-    printf("Nombre de tâches incomplétées : %d\n", incompleteTasks);
-}
-
-void displayStatistics_c_i(tache taches[], int size){
-     printf("Tâches avec le délai des jours restants :\n");
-    time_t seconds = time(NULL);
-    struct tm *current_time = localtime(&seconds);
-    int currentYear = (current_time->tm_year + 1900);
-    int currentMonth = (current_time->tm_mon + 1);
-    int currentDay = current_time->tm_mday;
-
-    for (int i = 0; i < size; i++) {
-        // Calculer le nombre de jours restants jusqu'au délai de la tâche
-        int jours = taches[i].deadline.annee * 365 + taches[i].deadline.mois * 30 + taches[i].deadline.jour;
-        int delai_jour = jours - (currentYear * 365 + currentMonth * 30 + currentDay);
-
-            printf("Identifiant : %d\nTitre : %s\nDescription : %s\nDeadline : %d/%d/%d\nStatut : %s\nNombre de jours restants : %d\n\n",
-                taches[i].identifiant, taches[i].titre, taches[i].description,
-                taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
-                taches[i].statut, delai_jour);
-
+        default:
+            printf("Option invalide.\n");
     }
 }
+
 
