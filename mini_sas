@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include<ctype.h>
 
 // Struct definitions...
 typedef struct date
@@ -199,8 +200,8 @@ void sortTasksByDeadline(tache taches[], int size)
                     }
                 }
             }
-        } displayTasks(taches,size);
-    }
+        }
+    }displayTasks(taches,size);
 
 }
 
