@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include<ctype.h>
 
 // Struct definitions...
 typedef struct date
@@ -95,7 +94,7 @@ int main()
             recherche(taches, size);
             break;
         case 7:
-            statisteque(taches, size);
+            statistique(taches, size);
             break;
         case 8:
             printf("\n\t\t\t\t\t >>> AU REVOIR (: \n\n");
@@ -129,7 +128,7 @@ void ajouter_tache(tache taches[], int *size)
     scanf(" %[^\n]", taches[*size].titre);
     printf("Entrer la description du taches : ");
     scanf(" %[^\n]", taches[*size].description);
-    printf("Entrer le deadline de taches (jj mm aaaa)   : ");
+    printf("Entrer le deadline de taches (jj mm aaaa)    : ");
     scanf("%d %d %d", &taches[*size].deadline.jour, &taches[*size].deadline.mois, &taches[*size].deadline.annee);
     printf("Entrer le statut du taches      : ");
     scanf(" %[^\n]", taches[*size].statut);
@@ -181,7 +180,7 @@ void trie_alphabitique(tache taches[], int size)
 void trie_deadline(tache taches[], int size)
 {
     tache tmp;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size-1; i++) {
         for (int j = i + 1; j < size; j++) {
             if (taches[i].deadline.annee > taches[j].deadline.annee) {
                 tmp = taches[i];
@@ -229,7 +228,7 @@ void delai_trois_jours(tache taches[], int size)
     }
 }
 
-   void modification(tache taches[], int size) {
+void modification(tache taches[], int size) {
     int id, found = 0;
     printf("Entrer l'identifiant de la tache à modifier : ");
     scanf("%d", &id);
@@ -362,7 +361,7 @@ void recherche(tache taches[], int size) {
     }
 }
 
-void statisteque(tache taches[], int size) {
+void statistique(tache taches[], int size){
     printf("\n");
     printf("\t\t >>>>MENU DE STATISTIQUES :\n");
     printf("\t\t 1-->Statistiques completes (taches completees et incompletes)\n");
@@ -373,20 +372,20 @@ void statisteque(tache taches[], int size) {
 
     switch (choix_stat) {
         case 1: {
-            int completedTasks = 0;
-            int incompleteTasks = 0;
+            int complet = 0;
+            int incomplet = 0;
 
             for (int i = 0; i < size; i++) {
                 if (strcmp(taches[i].statut, "REALISER") == 0) {
-                    completedTasks++;
+                    complet++;
                 } else {
-                    incompleteTasks++;
+                    incomplet++;
                 }
             }
 
             printf("Nombre total de taches : %d\n", size);
-            printf("Nombre de taches completes : %d\n", completedTasks);
-            printf("Nombre de taches incompletes : %d\n", incompleteTasks);
+            printf("Nombre de taches completes : %d\n", complet);
+            printf("Nombre de taches incompletes : %d\n", incomplet);
             break;
         }
         case 2: {
