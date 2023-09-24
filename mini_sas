@@ -54,10 +54,12 @@ int main()
         {
         case 1:
             ajouter_tache(taches, &size);
+            system("cls");
             affichage(taches, size);
             break;
         case 2:
             ajouter_plusieure_taches(taches, &size);
+             system("cls");
             affichage(taches, size);
             break;
         case 3:{
@@ -127,28 +129,36 @@ void menu()
 void ajouter_tache(tache taches[], int *size)
 {
     int statut;
-    printf("Entrer le titre du taches                    : ");
+    printf("Entrer le titre de la tache                  : ");
     scanf(" %[^\n]", taches[*size].titre);
-    printf("Entrer la description du taches              : ");
+    printf("Entrer la description de la tache            : ");
     scanf(" %[^\n]", taches[*size].description);
-    printf("Entrer le deadline de taches (jj mm aaaa)    : ");
+    printf("Entrer le deadline de la tache (jj mm aaaa)  : ");
     scanf("%d %d %d", &taches[*size].deadline.jour, &taches[*size].deadline.mois, &taches[*size].deadline.annee);
-    printf("Entrer le statut du taches                   : \n");
-    printf("Pour une tache a realiser saisie             -> 0\n");
-    printf("Pour une tache en cours de realiser saisie   -> 1\n");
-    printf("Pour une tache realiser saisie               -> 3\n");
-    printf("Taper votre choix :");
-    scanf("%d",&statut);
-     if (statut == 0) {
-        strcpy(taches[*size].statut, "A REALISER");
-    } else if (statut == 1) {
-        strcpy(taches[*size].statut, "EN COURS DE REALISATION");
-    } else if (statut == 2) {
-        strcpy(taches[*size].statut, "REALISER");
-    } else {
-        printf("Choix introuvable ??\n");
-        return;
+    
+    printf("Entrer le statut de la tache : \n");
+    printf("Pour une tache à réaliser, tapez 0\n");
+    printf("Pour une tache en cours de réalisation, tapez 1\n");
+    printf("Pour une tache réalisée, tapez 2\n");
+    
+    while (1) {
+        printf("Taper votre choix : ");
+        scanf("%d", &statut);
+        
+        if (statut == 0) {
+            strcpy(taches[*size].statut, "A REALISER");
+            break;
+        } else if (statut == 1) {
+            strcpy(taches[*size].statut, "EN COURS DE REALISATION");
+            break;
+        } else if (statut == 2) {
+            strcpy(taches[*size].statut, "REALISEE");
+            break;
+        } else {
+            printf("Choix invalide, veuillez réessayer.\n");
+        }
     }
+    
     printf("\n");
     taches[*size].identifiant = Identifiant;
     Identifiant++;
@@ -298,9 +308,8 @@ void supprimer(tache taches[], int *size)
 
     for (int i = 0; i < *size; i++) {
         if (taches[i].identifiant == id) {
-            printf("La tache a ete trouvee !!\n");
             tr = 1;
-
+            printf("La tache a ete trouvee !!\n");
             // Déplacer les tâches suivantes d'un cran vers le haut pour remplir l'emplacement supprimé
             for (int j = i; j < *size - 1; j++) {
                 taches[j] = taches[j + 1];
@@ -380,15 +389,7 @@ void recherche(tache taches[], int size) {
 
 void statistique(tache taches[], int size){
     printf("\n");
-    printf("\t\t >>>>MENU DE STATISTIQUES :\n");
-    printf("\t\t 1-->Statistiques completes (taches completees et incompletes)\n");
-    printf("\t\t 2-->Statistiques bases sur les delais\n");
-    int choix_stat;
-    printf("Taper votre choix : ");
-    scanf("%d", &choix_stat);
-
-    switch (choix_stat) {
-        case 1: {
+ 
             int complet = 0;
             int incomplet = 0;
 
@@ -403,9 +404,6 @@ void statistique(tache taches[], int size){
             printf("Nombre total de taches : %d\n", size);
             printf("Nombre de taches completes : %d\n", complet);
             printf("Nombre de taches incompletes : %d\n", incomplet);
-            break;
-        }
-        case 2: {
             printf("Taches avec le dalai des jours restants :\n");
             time_t seconds = time(NULL);
             struct tm *current_time = localtime(&seconds);
@@ -423,9 +421,5 @@ void statistique(tache taches[], int size){
                     taches[i].deadline.jour, taches[i].deadline.mois, taches[i].deadline.annee,
                     taches[i].statut, delai_jour);
             }
-            break;
-        }
-        default:
-            printf("Option invalide.\n");
-    }
+    
 }
